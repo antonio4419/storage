@@ -1,0 +1,103 @@
+<div class="page-container">
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <h1 class="header-title">Storage Management</h1>
+      <nav class="nav-options">
+        <button (click)="navigateTo('content')" class="nav-btn active">Content</button>
+        <button (click)="navigateTo('advances')" class="nav-btn">Advances</button>
+        <button (click)="navigateTo('profile')" class="nav-btn">Profile</button>
+        <button (click)="navigateTo('more')" class="nav-btn">More</button>
+        <button (click)="logout()" class="nav-btn logout-btn">Logout</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="content-header">
+      <div class="header-left">
+        <h2>Your Folders</h2>
+        <p class="folder-count">{{ folders().length }} folders available</p>
+      </div>
+      <button (click)="openNewFolderModal()" class="new-folder-btn">
+        <span class="btn-icon">+</span>
+        New Folder
+      </button>
+    </div>
+
+    <div class="folders-grid">
+      <div class="folder-card" *ngFor="let folder of paginatedFolders">
+        <div class="folder-icon">📁</div>
+        <div class="folder-info">
+          <h3 class="folder-name">{{ folder.name }}</h3>
+          <div class="folder-details">
+            <span class="folder-items">{{ folder.items }} items</span>
+            <span class="folder-size">{{ folder.size }}</span>
+          </div>
+          <p class="folder-description" *ngIf="folder.description">{{ folder.description }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination" *ngIf="totalPages > 1">
+      <button (click)="goToPreviousPage()" class="pagination-btn" [disabled]="currentPage() === 1">
+        ← Previous
+      </button>
+
+      <button (click)="goToPage(page)" class="pagination-btn page-number" [class.active]="currentPage() === page" *ngFor="let page of getPageNumbers()">
+        {{ page }}
+      </button>
+
+      <button (click)="goToNextPage()" class="pagination-btn" [disabled]="currentPage() === totalPages">
+        Next →
+      </button>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <p>&copy; 2026 Storage Management System. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- New Folder Modal -->
+  <div class="modal-overlay" *ngIf="showNewFolderModal()" (click)="closeNewFolderModal()">
+    <div class="modal-container" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Create New Folder</h3>
+        <button (click)="closeNewFolderModal()" class="close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="folder-name">Folder Name *</label>
+          <input
+            type="text"
+            id="folder-name"
+            [(ngModel)]="newFolderName"
+            class="form-input"
+            placeholder="Enter folder name"
+          />
+        </div>
+        <div class="form-group">
+          <label for="folder-description">Description</label>
+          <textarea
+            id="folder-description"
+            [(ngModel)]="newFolderDescription"
+            class="form-textarea"
+            placeholder="Enter folder description (optional)"
+            rows="3"
+          ></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button (click)="closeNewFolderModal()" class="btn btn-cancel">Cancel</button>
+        <button (click)="addNewFolder()" class="btn btn-primary" [disabled]="!newFolderName.trim()">
+          Add Folder
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
